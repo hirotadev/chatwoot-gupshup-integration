@@ -3,16 +3,6 @@ import { chatwootService } from '../services/chatwootService.js';
 import { gupshupService } from '../services/gupshupService.js';
 import { messageParser } from '../utils/messageParser.js';
 
-const shouldSendRatingRequest = (body) => {
-    console.log(body.messages[0].content.includes('Por favor, classifique esta conversa'));
-    console.log(body);
-    console.log(body.messages[0]);
-    console.log(body.messages[0].content);
-  return (
-    body.messages[0].content.includes('Por favor, classifique esta conversa')
-  );
-};
-
 const handleOutgoingMessage = async (body) => {
   const destination = body.conversation.meta.sender.phone_number;
   
