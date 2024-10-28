@@ -63,14 +63,14 @@ class ChatwootService {
     }
   }
 
-  async createConversation(contactId, sourceId, initialMessage, messageId, direction) {
+  async createConversation(contactId, sourceId, initialMessage, direction, private) {
     try {
       const conversationId = await this._getOrCreateConversationId(contactId, sourceId);
       
       if(direction == 'incoming'){
-        return await this._createIncomingMessage(conversationId, initialMessage, messageId);
+        return await this._createIncomingMessage(conversationId, initialMessage, private);
       }else if(direction == 'outgoing'){
-        return await this._createOutgoingMessage(conversationId, initialMessage, messageId);
+        return await this._createOutgoingMessage(conversationId, initialMessage, private);
       }      
     } catch (error) {
       console.error('Failed to create conversation:', error);
@@ -112,26 +112,26 @@ class ChatwootService {
     return response.data.id;
   }
 
-  async _createIncomingMessage(conversationId, content, messageId) {
+  async _createIncomingMessage(conversationId, content, private) {
     const response = await axios.post(
       `${this.baseUrl}/api/v1/accounts/${this.accountId}/conversations/${conversationId}/messages`,
       {
         content,
         message_type: "incoming",
-        custom_attributes: { messageId }
+        private
       },
       this._getHeaders()
     );
     return response.data;
   }
 
-  async _createOutgoingMessage(conversationId, content, messageId) {
+  async _createOutgoingMessage(conversationId, content, private) {
     const response = await axios.post(
       `${this.baseUrl}/api/v1/accounts/${this.accountId}/conversations/${conversationId}/messages`,
       {
         content,
         message_type: "outgoing",
-        custom_attributes: { messageId }
+        private
       },
       this._getHeaders()
     );
@@ -148,10 +148,10 @@ class ChatwootService {
     return formattedMessage;
   }
 
-  async sendToChatwoot(phone, name, content, messageId) {
+  async sendToChatwoot(phone, name, content) {
     try{
         const contactId = await this.findOrCreateContact(phone, name);
-        return await this.createConversation(contactId.id, contactId.source_id, content, messageId, 'incoming');
+        return await this.createConversation(contactId.id, contactId.source_id, content, 'incoming', false);
     }catch(error){
         throw error;
     }
@@ -162,7 +162,7 @@ class ChatwootService {
         const contactId = await this.findOrCreateContact(destination);
         const templateDetails = await gupshupService.getTemplateDetails(this.gupShupAppId, templateId);
         const messageFormatted = this._formatTemplateMessageForChatwoot(templateDetails.data, params);
-        return await this.createConversation(contactId.id, contactId.source_id, messageFormatted, 'ignore-send', 'outgoing');
+        return await this.createConversation(contactId.id, contactId.source_id, messageFormatted, 'outgoing', true);
     }catch(error){
         throw error;
     }
