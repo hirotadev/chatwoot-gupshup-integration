@@ -70,10 +70,10 @@ const handleAttachment = async (attachment, destination) => {
 };
 
 const handleRatingRequest = async (body) => {
-  const destination = body.meta.sender.phone_number;
+  const destination = body.conversation.meta.sender.phone_number;
   await gupshupService.sendMessage(destination, {
     type: 'text',
-    text: body.messages[0].content
+    text: body.content
   });
 };
 
