@@ -102,6 +102,7 @@ export const webhookRoutes = async (fastify) => {
         const { body } = request;
 
         try {
+            console.log(body);
             console.log(body.conversation);
             if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false) {
                 await handleOutgoingMessage(body);
