@@ -63,14 +63,14 @@ class ChatwootService {
     }
   }
 
-  async createConversation(contactId, sourceId, initialMessage, direction, private) {
+  async createConversation(contactId, sourceId, initialMessage, direction, privateStatus) {
     try {
       const conversationId = await this._getOrCreateConversationId(contactId, sourceId);
       
       if(direction == 'incoming'){
-        return await this._createIncomingMessage(conversationId, initialMessage, private);
+        return await this._createIncomingMessage(conversationId, initialMessage, privateStatus);
       }else if(direction == 'outgoing'){
-        return await this._createOutgoingMessage(conversationId, initialMessage, private);
+        return await this._createOutgoingMessage(conversationId, initialMessage, privateStatus);
       }      
     } catch (error) {
       console.error('Failed to create conversation:', error);
@@ -112,26 +112,26 @@ class ChatwootService {
     return response.data.id;
   }
 
-  async _createIncomingMessage(conversationId, content, private) {
+  async _createIncomingMessage(conversationId, content, privateStatus) {
     const response = await axios.post(
       `${this.baseUrl}/api/v1/accounts/${this.accountId}/conversations/${conversationId}/messages`,
       {
         content,
         message_type: "incoming",
-        private
+        private: privateStatus
       },
       this._getHeaders()
     );
     return response.data;
   }
 
-  async _createOutgoingMessage(conversationId, content, private) {
+  async _createOutgoingMessage(conversationId, content, privateStatus) {
     const response = await axios.post(
       `${this.baseUrl}/api/v1/accounts/${this.accountId}/conversations/${conversationId}/messages`,
       {
         content,
         message_type: "outgoing",
-        private
+        private: privateStatus
       },
       this._getHeaders()
     );
