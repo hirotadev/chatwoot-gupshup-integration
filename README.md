@@ -163,7 +163,7 @@ docker run -d \
 
 1. Install PM2:
 ```bash
-npm install -g pm2
+sudo npm install -g pm2
 ```
 
 2. Start the service:
