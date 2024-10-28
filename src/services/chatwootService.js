@@ -2,13 +2,14 @@
 import axios from 'axios';
 import { config } from '../config/environment.js';
 import { phoneUtils } from '../utils/phoneUtils.js';
-
+import { gupshupService } from './gupshupService.js';
 class ChatwootService {
   constructor() {
     this.baseUrl = config.chatwoot.baseUrl;
     this.apiToken = config.chatwoot.apiToken;
     this.inboxId = config.chatwoot.inboxId;
     this.accountId = config.chatwoot.accountId;
+    this.gupShupAppId = config.gupshup.appId;
   }
 
   async findOrCreateContact(phone, name) {
@@ -45,7 +46,7 @@ class ChatwootService {
         `${this.baseUrl}/api/v1/accounts/${this.accountId}/contacts`,
         {
           inbox_id: this.inboxId,
-          name,
+          name: name || null,
           phone_number: phoneNumber,
           additional_attributes: { source: 'GupShup' }
         },
@@ -62,11 +63,15 @@ class ChatwootService {
     }
   }
 
-  async createConversation(contactId, sourceId, initialMessage, messageId) {
+  async createConversation(contactId, sourceId, initialMessage, messageId, direction) {
     try {
       const conversationId = await this._getOrCreateConversationId(contactId, sourceId);
       
-      return this._createIncomingMessage(conversationId, initialMessage, messageId);
+      if(direction == 'incoming'){
+        return await this._createIncomingMessage(conversationId, initialMessage, messageId);
+      }else if(direction == 'outgoing'){
+        return await this._createOutgoingMessage(conversationId, initialMessage, messageId);
+      }      
     } catch (error) {
       console.error('Failed to create conversation:', error);
       throw error;
@@ -120,10 +125,44 @@ class ChatwootService {
     return response.data;
   }
 
+  async _createOutgoingMessage(conversationId, content, messageId) {
+    const response = await axios.post(
+      `${this.baseUrl}/api/v1/accounts/${this.accountId}/conversations/${conversationId}/messages`,
+      {
+        content,
+        message_type: "outgoing",
+        custom_attributes: { messageId }
+      },
+      this._getHeaders()
+    );
+    return response.data;
+  }
+
+  _formatTemplateMessageForChatwoot(data, params) {
+    let formattedMessage = data;
+    params.forEach((param, index) => {
+      const placeholder = `{{${index + 1}}}`;
+      formattedMessage = formattedMessage.replace(placeholder, param);
+    });
+    formattedMessage = formattedMessage.replace(/\*(.*?)\*/g, '**$1**');
+    return formattedMessage;
+  }
+
   async sendToChatwoot(phone, name, content, messageId) {
     try{
         const contactId = await this.findOrCreateContact(phone, name);
-        return await this.createConversation(contactId.id, contactId.source_id, content, messageId);
+        return await this.createConversation(contactId.id, contactId.source_id, content, messageId, 'incoming');
+    }catch(error){
+        throw error;
+    }
+  }
+
+  async sendToChatwootAfterTemplate(destination, templateId, params) {
+    try{
+        const contactId = await this.findOrCreateContact(destination);
+        const templateDetails = await gupshupService.getTemplateDetails(this.gupShupAppId, templateId);
+        const messageFormatted = this._formatTemplateMessageForChatwoot(templateDetails.data, params);
+        return await this.createConversation(contactId.id, contactId.source_id, messageFormatted, templateId, 'outgoing');
     }catch(error){
         throw error;
     }

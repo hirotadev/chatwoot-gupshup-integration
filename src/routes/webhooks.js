@@ -5,7 +5,6 @@ import { messageParser } from '../utils/messageParser.js';
 
 const shouldSendRatingRequest = (body) => {
   return (
-    body.event === 'conversation_updated' &&
     body.status === 'resolved' &&
     body.messages?.[0]?.content?.includes('Por favor, classifique esta conversa')
   );
@@ -76,40 +75,68 @@ const handleRatingRequest = async (body) => {
 };
 
 export const webhookRoutes = async (fastify) => {
-  fastify.post('/webhook/gupshup', async (request, reply) => {
-    const { body } = request;
+    fastify.post('/webhook/gupshup', async (request, reply) => {
+        const { body } = request;
 
-    if (body.type !== 'message') {
-      return reply.status(200).send();
-    }
+        if (body.type !== 'message') {
+            return reply.status(200).send();
+        }
 
-    try {
-      const { id: messageId, sender, type, payload } = body.payload;
-      const messageContent = messageParser.parseIncoming(type, payload);
-      
-      await chatwootService.sendToChatwoot(sender.phone, sender.name, messageContent, messageId);
-      
-      return reply.status(200).send();
-    } catch (error) {
-      request.log.error('Error processing Gupshup webhook:', error);
-      return reply.status(200).send();
-    }
-  });
+        try {
+            const { id: messageId, sender, type, payload } = body.payload;
+            const messageContent = messageParser.parseIncoming(type, payload);
+            
+            await chatwootService.sendToChatwoot(sender.phone, sender.name, messageContent, messageId);
+            
+            return reply.status(200).send();
+        } catch (error) {
+            request.log.error('Error processing Gupshup webhook:', error);
+            return reply.status(200).send();
+        }
+    });
 
-  fastify.post('/webhook/chatwoot', async (request, reply) => {
-    const { body } = request;
+    fastify.post('/webhook/chatwoot', async (request, reply) => {
+        const { body } = request;
 
-    try {
-      if (body.event === 'message_created' && body.message_type === 'outgoing') {
-        await handleOutgoingMessage(body);
-      } else if (shouldSendRatingRequest(body)) {
-        await handleRatingRequest(body);
-      }
+        try {
+            if (body.event === 'message_created' && body.message_type === 'outgoing') {
+                await handleOutgoingMessage(body);
+            } else if (shouldSendRatingRequest(body)) {
+                await handleRatingRequest(body);
+            }
 
-      return reply.status(200).send();
-    } catch (error) {
-      request.log.error('Error processing Chatwoot webhook:', error);
-      return reply.status(200).send();
-    }
-  });
+            return reply.status(200).send();
+        } catch (error) {
+            request.log.error('Error processing Chatwoot webhook:', error);
+            return reply.status(200).send();
+        }
+    });
+
+    fastify.get('/templates', async (request, reply) => {
+        try {
+            const templates = await gupshupService.getTemplates();    
+            reply.status(200).send(templates.templates);
+        } catch (error) {
+            fastify.log.error(error);
+            return reply.status(500).send({ error: 'Erro ao listar templates.', details: error });
+        }
+    });
+
+    fastify.post('/send-template', async (request, reply) => {
+        const { destination, templateId, params } = request.body;
+        if (!destination || !templateId || !params) {
+            return reply.status(400).send({ error: 'Os campos destination, templateId e params são obrigatórios.' });
+        }
+        try {
+            const responseSendTemplate = await gupshupService.sendTemplate(destination, templateId, params);
+            const responseSendToChatwootAfterTemplate = await chatwootService.sendToChatwootAfterTemplate(destination, templateId, params);
+            return reply.send({
+                responseSendTemplate: responseSendTemplate.data,
+                responseSendToChatwootAfterTemplate: responseSendToChatwootAfterTemplate
+            });
+        } catch (error) {
+            fastify.log.error(error);
+            return reply.status(500).send({ error: 'Erro ao enviar o template.' });
+        }
+    });
 };

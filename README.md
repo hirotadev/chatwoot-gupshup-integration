@@ -54,7 +54,8 @@ INBOX_ID=your_chatwoot_inbox_id
 # Gupshup Configuration
 GUPSHUP_API_KEY=your_gupshup_api_key
 GUPSHUP_PHONE=your_whatsapp_phone_number
-GUPSHUP_SRC_NAME=your_source_name
+GUPSHUP_SRC_NAME=your_gupshup_source_name
+GUPSHUP_APP_ID=your_gupshup_app_id
 ```
 
 4. Start the service:

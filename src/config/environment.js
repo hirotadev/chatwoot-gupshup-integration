@@ -13,7 +13,8 @@ export const config = {
   gupshup: {
     apiKey: process.env.GUPSHUP_API_KEY,
     phone: process.env.GUPSHUP_PHONE,
-    srcName: process.env.GUPSHUP_SRC_NAME
+    srcName: process.env.GUPSHUP_SRC_NAME,
+    appId: process.env.GUPSHUP_APP_ID
   },
   server: {
     port: process.env.PORT || 3000
