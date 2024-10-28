@@ -103,12 +103,9 @@ export const webhookRoutes = async (fastify) => {
 
         try {
             console.log(body.conversation);
-            if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false && !body.conversation.messages[0].content.includes('Por favor, classifique esta conversa')) {
+            if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false) {
                 await handleOutgoingMessage(body);
-            } else if (body.conversation.messages[0].content.includes('Por favor, classifique esta conversa')) {
-                await handleRatingRequest(body);
             }
-
             return reply.status(200).send();
         } catch (error) {
             request.log.error('Error processing Chatwoot webhook:', error);
