@@ -48,7 +48,7 @@ PORT=3000
 # Chatwoot Configuration
 CHATWOOT_BASE_URL=https://your-chatwoot-instance.com
 CHATWOOT_API_TOKEN=your_chatwoot_api_token
-CHATWOOT_ACCOUNT_ID=1
+CHATWOOT_ACCOUNT_ID=your_chatwoot_account_id
 INBOX_ID=your_chatwoot_inbox_id
 
 # Gupshup Configuration

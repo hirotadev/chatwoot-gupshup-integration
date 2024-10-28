@@ -76,48 +76,7 @@ const handleRatingRequest = async (body) => {
 };
 
 export const webhookRoutes = async (fastify) => {
-  // Adiciona schema validation para os endpoints
-  const gupshupSchema = {
-    schema: {
-      body: {
-        type: 'object',
-        required: ['type', 'payload'],
-        properties: {
-          type: { type: 'string' },
-          payload: {
-            type: 'object',
-            required: ['id', 'sender', 'type'],
-            properties: {
-              id: { type: 'string' },
-              sender: {
-                type: 'object',
-                required: ['phone', 'name'],
-                properties: {
-                  phone: { type: 'string' },
-                  name: { type: 'string' }
-                }
-              },
-              type: { type: 'string' }
-            }
-          }
-        }
-      }
-    }
-  };
-
-  const chatwootSchema = {
-    schema: {
-      body: {
-        type: 'object',
-        required: ['event'],
-        properties: {
-          event: { type: 'string', enum: ['message_created', 'conversation_updated'] }
-        }
-      }
-    }
-  };
-
-  fastify.post('/webhook/gupshup', gupshupSchema, async (request, reply) => {
+  fastify.post('/webhook/gupshup', async (request, reply) => {
     const { body } = request;
 
     if (body.type !== 'message') {
@@ -130,17 +89,14 @@ export const webhookRoutes = async (fastify) => {
       
       await chatwootService.sendToChatwoot(sender.phone, sender.name, messageContent, messageId);
       
-      return reply.status(200).send({ status: 'success' });
+      return reply.status(200).send();
     } catch (error) {
       request.log.error('Error processing Gupshup webhook:', error);
-      return reply.status(200).send({ 
-        status: 'error',
-        message: 'Error processing message'
-      });
+      return reply.status(200).send();
     }
   });
 
-  fastify.post('/webhook/chatwoot', chatwootSchema, async (request, reply) => {
+  fastify.post('/webhook/chatwoot', async (request, reply) => {
     const { body } = request;
 
     try {
@@ -150,13 +106,10 @@ export const webhookRoutes = async (fastify) => {
         await handleRatingRequest(body);
       }
 
-      return reply.status(200).send({ status: 'success' });
+      return reply.status(200).send();
     } catch (error) {
       request.log.error('Error processing Chatwoot webhook:', error);
-      return reply.status(200).send({ 
-        status: 'error',
-        message: 'Error processing message'
-      });
+      return reply.status(200).send();
     }
   });
 };

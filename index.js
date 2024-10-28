@@ -1,7 +1,7 @@
 // src/index.js
 import Fastify from 'fastify';
-import { config } from './config/environment.js';
-import { webhookRoutes } from './routes/webhooks.js';
+import { config } from './src/config/environment.js';
+import { webhookRoutes } from './src/routes/webhooks.js';
 
 const fastify = Fastify({
   logger: true
@@ -11,7 +11,7 @@ fastify.register(webhookRoutes);
 
 const start = async () => {
   try {
-    await fastify.listen({ 
+    fastify.listen({ 
       port: config.server.port,
       host: '0.0.0.0'
     });

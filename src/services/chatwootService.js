@@ -53,7 +53,7 @@ class ChatwootService {
       );
       
       return {
-        id: response.data.payload.id,
+        id: response.data.payload.contact.id,
         source_id: response.data.payload.contact.contact_inboxes[0].source_id
       };
     } catch (error) {
