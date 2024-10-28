@@ -102,10 +102,9 @@ export const webhookRoutes = async (fastify) => {
         const { body } = request;
 
         try {
-            const sendRatingStatus = shouldSendRatingRequest(body);
-            if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false && sendRatingStatus === false) {
+            if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false && !body.messages[0].content.includes('Por favor, classifique esta conversa')) {
                 await handleOutgoingMessage(body);
-            } else if (shouldSendRatingRequest(body) === true) {
+            } else if (body.messages[0].content.includes('Por favor, classifique esta conversa')) {
                 await handleRatingRequest(body);
             }
 
