@@ -102,11 +102,12 @@ export const webhookRoutes = async (fastify) => {
         const { body } = request;
 
         try {
-            console.log(body);
-            console.log(body.conversation);
             if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false) {
                 await handleOutgoingMessage(body);
+            } else if (body.content_type === 'input_csat') {
+                await handleRatingRequest(body);
             }
+
             return reply.status(200).send();
         } catch (error) {
             request.log.error('Error processing Chatwoot webhook:', error);
