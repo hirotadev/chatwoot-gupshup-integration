@@ -1,0 +1,22 @@
+# Node.js
+node_modules
+dist/
+.npm/
+*.log
+*.env
+.env.*
+.vscode/
+coverage/
+.nyc_output/
+.DS_Store
+package-lock.json
+yarn.lock
+npm-debug.log*
+pids/
+logs/
+.idea/
+
+# Outros
+*.swp
+*.tmp
+*.bak
