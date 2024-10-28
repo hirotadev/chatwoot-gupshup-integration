@@ -5,7 +5,6 @@ import { messageParser } from '../utils/messageParser.js';
 
 const shouldSendRatingRequest = (body) => {
   return (
-    body.conversation.status === 'resolved' &&
     body.messages?.[0]?.content?.includes('Por favor, classifique esta conversa')
   );
 };
