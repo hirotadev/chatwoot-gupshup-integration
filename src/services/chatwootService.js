@@ -162,7 +162,7 @@ class ChatwootService {
         const contactId = await this.findOrCreateContact(destination);
         const templateDetails = await gupshupService.getTemplateDetails(this.gupShupAppId, templateId);
         const messageFormatted = this._formatTemplateMessageForChatwoot(templateDetails.data, params);
-        return await this.createConversation(contactId.id, contactId.source_id, messageFormatted, templateId, 'outgoing');
+        return await this.createConversation(contactId.id, contactId.source_id, messageFormatted, 'ignore-send', 'outgoing');
     }catch(error){
         throw error;
     }
