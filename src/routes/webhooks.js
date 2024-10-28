@@ -4,6 +4,10 @@ import { gupshupService } from '../services/gupshupService.js';
 import { messageParser } from '../utils/messageParser.js';
 
 const shouldSendRatingRequest = (body) => {
+    console.log(body.messages[0].content.includes('Por favor, classifique esta conversa'));
+    console.log(body);
+    console.log(body.messages[0]);
+    console.log(body.messages[0].content);
   return (
     body.messages[0].content.includes('Por favor, classifique esta conversa')
   );
@@ -98,9 +102,10 @@ export const webhookRoutes = async (fastify) => {
         const { body } = request;
 
         try {
-            if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false) {
+            const sendRatingStatus = shouldSendRatingRequest(body);
+            if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false && sendRatingStatus === false) {
                 await handleOutgoingMessage(body);
-            } else if (shouldSendRatingRequest(body)) {
+            } else if (shouldSendRatingRequest(body) === true) {
                 await handleRatingRequest(body);
             }
 
