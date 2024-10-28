@@ -99,7 +99,7 @@ export const webhookRoutes = async (fastify) => {
         const { body } = request;
 
         try {
-            if (body.event === 'message_created' && body.message_type === 'outgoing') {
+            if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false) {
                 await handleOutgoingMessage(body);
             } else if (shouldSendRatingRequest(body)) {
                 await handleRatingRequest(body);
