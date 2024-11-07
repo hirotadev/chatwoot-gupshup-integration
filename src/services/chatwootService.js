@@ -80,7 +80,7 @@ class ChatwootService {
 
   async _getOrCreateConversationId(contactId, sourceId) {
     const conversations = await this._getExistingConversations(contactId);
-    const openConversation = conversations.find(conv => conv.status === 'open');
+    const openConversation = conversations.find(conv => conv.status === 'open' || conv.status === 'pending');
     
     if (openConversation) {
       return openConversation.id;
