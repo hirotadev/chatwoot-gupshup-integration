@@ -9,7 +9,7 @@ export const phoneUtils = {
         return phoneNumber.replace(/\D/g, '');
     },
   
-    formatPhoneNumber(number) {
+    formatToBrazilianE164(number) {
         let cleanedNumber = number.trim();
         if (cleanedNumber.startsWith('+')) {
             return cleanedNumber;
