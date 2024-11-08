@@ -1,5 +1,6 @@
 // src/index.js
 import Fastify from 'fastify';
+import cors from '@fastify/cors';
 import { config } from './src/config/environment.js';
 import { webhookRoutes } from './src/routes/webhooks.js';
 
@@ -7,7 +8,7 @@ const fastify = Fastify({
   logger: true
 });
 
-fastify.register(webhookRoutes);
+fastify.register(cors, webhookRoutes);
 
 const start = async () => {
   try {
