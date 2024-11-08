@@ -148,10 +148,11 @@ class ChatwootService {
     return formattedMessage;
   }
 
-  async updateContactAttributesForNotSendBotMenu(contact_id) {
+  async updateContactAttributesForNotSendBotMenu(destination) {
     // Função customizada para utilização por exemplo do N8N para que ele não dispare o menu do bot quando o usuário responder o template
+    const contactId = await this.findOrCreateContact(destination);
     const response = await axios.put(
-      `${this.baseUrl}/api/v1/accounts/${this.accountId}/contacts/${contact_id}`,
+      `${this.baseUrl}/api/v1/accounts/${this.accountId}/contacts/${contactId.id}`,
       {
         custom_attributes: {
           disparo: 'sim'
@@ -176,7 +177,6 @@ class ChatwootService {
         const contactId = await this.findOrCreateContact(destination);
         const templateDetails = await gupshupService.getTemplateDetails(this.gupShupAppId, templateId);
         const messageFormatted = this._formatTemplateMessageForChatwoot(templateDetails.data, params);
-        const updateContactAttributes = await this.updateContactAttributesForNotSendBotMenu(contactId.id);
         return await this.createConversation(contactId.id, contactId.source_id, messageFormatted, 'outgoing', true);
     }catch(error){
         throw error;

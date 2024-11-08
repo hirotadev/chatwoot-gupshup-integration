@@ -121,6 +121,7 @@ export const webhookRoutes = async (fastify) => {
             return reply.status(400).send({ error: 'Os campos destination, templateId e params são obrigatórios.' });
         }
         try {
+            const responseSetSend = await chatwootService.updateContactAttributesForNotSendBotMenu(destination);
             const responseSendTemplate = await gupshupService.sendTemplate(destination, templateId, params);
             const responseSendToChatwootAfterTemplate = await chatwootService.sendToChatwootAfterTemplate(destination, templateId, params);
             return reply.send({
