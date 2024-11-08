@@ -9,14 +9,18 @@ export const phoneUtils = {
         return phoneNumber.replace(/\D/g, '');
     },
   
-    formatToBrazilianE164(phone) {
-        const cleaned = this.cleanPhoneNumber(phone);
-        const formatted = `+55${cleaned}`;
-      
-        if (!this.isE164Format(formatted)) {
-            throw new Error(`Invalid phone number format: ${formatted}`);
+    formatPhoneNumber(number) {
+        let cleanedNumber = number.trim();
+        if (cleanedNumber.startsWith('+')) {
+            return cleanedNumber;
+        } 
+        if (cleanedNumber.startsWith('55')) {
+            if (cleanedNumber.length === 13 || cleanedNumber.length === 14) {
+                return '+' + cleanedNumber;
+            } else {
+                return '+55' + cleanedNumber;
+            }
         }
-      
-        return formatted;
-    }
+        return '+55' + cleanedNumber;
+    }      
 };
