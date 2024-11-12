@@ -3,6 +3,8 @@ import axios from 'axios';
 import { config } from '../config/environment.js';
 import { phoneUtils } from '../utils/phoneUtils.js';
 import { gupshupService } from './gupshupService.js';
+import crypto from 'crypto';
+
 class ChatwootService {
   constructor() {
     this.baseUrl = config.chatwoot.baseUrl;
@@ -17,7 +19,7 @@ class ChatwootService {
     if (contact) {
       return {
         id: contact.id,
-        source_id: contact.contact_inboxes[0].source_id
+        source_id: contact?.contact_inboxes[0]?.source_id || crypto.randomUUID()
       };
     }
     return this.createContact(phone, name);
