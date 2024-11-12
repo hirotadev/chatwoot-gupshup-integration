@@ -15,7 +15,7 @@ export const phoneUtils = {
             return cleanedNumber;
         } 
         if (cleanedNumber.startsWith('55')) {
-            if (cleanedNumber.length === 13 || cleanedNumber.length === 14) {
+            if (cleanedNumber.length === 12 || cleanedNumber.length === 13) {
                 return '+' + cleanedNumber;
             } else {
                 return '+55' + cleanedNumber;
