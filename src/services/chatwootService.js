@@ -142,11 +142,13 @@ class ChatwootService {
 
   _formatTemplateMessageForChatwoot(data, params) {
     let formattedMessage = data;
-    params.forEach((param, index) => {
-      const placeholder = `{{${index + 1}}}`;
-      formattedMessage = formattedMessage.replace(placeholder, param);
-    });
-    formattedMessage = formattedMessage.replace(/\*(.*?)\*/g, '**$1**');
+    if(params){
+      params.forEach((param, index) => {
+        const placeholder = `{{${index + 1}}}`;
+        formattedMessage = formattedMessage.replace(placeholder, param);
+      });
+      formattedMessage = formattedMessage.replace(/\*(.*?)\*/g, '**$1**');
+    }
     return formattedMessage;
   }
 

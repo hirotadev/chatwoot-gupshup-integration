@@ -53,28 +53,64 @@ class GupshupService {
     }
   }
 
-  async sendTemplate(destination, templateId, params) {
+  async sendTemplate(destination, templateId, params, type, files = null) {
     const encodedParams = new URLSearchParams();
     encodedParams.set('source', this.phone);
     encodedParams.set('destination', destination.replace('+', ''));
     encodedParams.set('template', JSON.stringify({ id: templateId, params }));
 
+    const allowedTypes = ['IMAGE', 'VIDEO', 'DOCUMENT', 'LOCATION'];
+    
+    if (type && files) {
+      if (!allowedTypes.includes(type)) {
+        throw new Error(`Tipo de mídia inválido. Tipos permitidos: ${allowedTypes.join(', ')}`);
+      }
+      let jsonTemplateFile;
+      switch (type) {
+        case 'IMAGE':
+        case 'VIDEO':
+        case 'DOCUMENT':
+          jsonTemplateFile = {
+            type: type.toLowerCase(),
+            [type.toLowerCase()]: {
+              link: files.url
+            }
+          };
+          break;
+        case 'LOCATION':
+          if (!files.latitude || !files.longitude || !files.address || !files.name) {
+            throw new Error('Location deve conter latitude, longitude, address e name');
+          }
+          jsonTemplateFile = {
+            type: type.toLowerCase(),
+            [type.toLowerCase()]: {
+              name: files.name,
+              address: files.address,
+              latitude: files.latitude,
+              longitude: files.longitude
+            }
+          };
+          break;
+      }
+      encodedParams.set('message', JSON.stringify(jsonTemplateFile));
+    }
+
     const options = {
-      method: 'POST',
-      url: 'https://api.gupshup.io/wa/api/v1/template/msg',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        apikey: this.apiKey
-      },
-      data: encodedParams,
+        method: 'POST',
+        url: 'https://api.gupshup.io/wa/api/v1/template/msg',
+        headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            apikey: this.apiKey
+        },
+        data: encodedParams,
     };
 
     try {
-      return await axios.request(options);
+        return await axios.request(options);
     } catch (error) {
-      console.error('Failed to send template message to Gupshup:', error);
-      throw error;
+        console.error('Failed to send template message to Gupshup:', error);
+        throw error;
     }
   }
 
