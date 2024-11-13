@@ -26,7 +26,9 @@ export const messageParser = {
     },
   
     _parseImage(payload) {
-      return `![Image](${payload.url})\n\n${payload.caption || ''}`;
+      //Retornando como Arquivo para possibilitar o download na conversa do chatwoot e não somente a visualização
+      //return `![Image](${payload.url})\n\n${payload.caption || ''}`;
+      return `**Arquivo:** [${payload.caption || 'Download'}](${payload.url})`;
     },
   
     _parseFile(payload) {
