@@ -27,7 +27,7 @@ class ChatwootService {
 
   async searchContactByPhone(phone) {
     try {
-      const phoneNumber = phoneUtils.formatToBrazilianE164(phone);
+      const phoneNumber = phoneUtils.formatPhoneNumber(phone);
       const response = await axios.get(
         `${this.baseUrl}/api/v1/accounts/${this.accountId}/contacts/search?q=${phoneNumber}`,
         this._getHeaders()
@@ -43,7 +43,7 @@ class ChatwootService {
 
   async createContact(phone, name) {
     try {
-      const phoneNumber = phoneUtils.formatToBrazilianE164(phone);
+      const phoneNumber = phoneUtils.formatPhoneNumber(phone);
       const response = await axios.post(
         `${this.baseUrl}/api/v1/accounts/${this.accountId}/contacts`,
         {
