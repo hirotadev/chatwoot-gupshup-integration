@@ -10,7 +10,9 @@ export const messageParser = {
         contact: this._parseContact,
         location: this._parseLocation,
         button_reply: this._parseButtonReply,
-        list_reply: this._parseListReply
+        list_reply: this._parseListReply,
+        quick_reply: this._parseQuickReply,
+        sticker: this._parseSticker
       };
   
       const parser = parsers[type];
@@ -61,5 +63,13 @@ export const messageParser = {
   
     _parseListReply(payload) {
       return `**Resposta da lista:** ${payload.title} (ID: ${payload.id})`;
-    }
+    },
+
+    _parseQuickReply(payload) {
+      return `**Resposta dos botões:** ${payload.text}`;
+    },
+
+    _parseSticker(payload) {
+      return `![Image](${payload.url})`;
+    },
   };
