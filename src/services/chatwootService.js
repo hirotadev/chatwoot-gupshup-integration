@@ -27,7 +27,7 @@ class ChatwootService {
 
   async searchContactByPhone(phone) {
     try {
-      const phoneNumber = phoneUtils.formatToBrazilianE164(phone);
+      const phoneNumber = phoneUtils.formatPhoneNumber(phone);
       const response = await axios.get(
         `${this.baseUrl}/api/v1/accounts/${this.accountId}/contacts/search?q=${phoneNumber}`,
         this._getHeaders()
@@ -43,7 +43,7 @@ class ChatwootService {
 
   async createContact(phone, name) {
     try {
-      const phoneNumber = phoneUtils.formatToBrazilianE164(phone);
+      const phoneNumber = phoneUtils.formatPhoneNumber(phone);
       const response = await axios.post(
         `${this.baseUrl}/api/v1/accounts/${this.accountId}/contacts`,
         {
@@ -142,11 +142,13 @@ class ChatwootService {
 
   _formatTemplateMessageForChatwoot(data, params) {
     let formattedMessage = data;
-    params.forEach((param, index) => {
-      const placeholder = `{{${index + 1}}}`;
-      formattedMessage = formattedMessage.replace(placeholder, param);
-    });
-    formattedMessage = formattedMessage.replace(/\*(.*?)\*/g, '**$1**');
+    if(params){
+      params.forEach((param, index) => {
+        const placeholder = `{{${index + 1}}}`;
+        formattedMessage = formattedMessage.replace(placeholder, param);
+      });
+      formattedMessage = formattedMessage.replace(/\*(.*?)\*/g, '**$1**');
+    }
     return formattedMessage;
   }
 

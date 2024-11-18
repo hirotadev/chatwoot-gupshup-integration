@@ -116,13 +116,13 @@ export const webhookRoutes = async (fastify) => {
     });
 
     fastify.post('/send-template', async (request, reply) => {
-        const { destination, templateId, params } = request.body;
-        if (!destination || !templateId || !params) {
-            return reply.status(400).send({ error: 'Os campos destination, templateId e params são obrigatórios.' });
+        const { destination, templateId, params = [], type, files = null } = request.body;
+        if (!destination || !templateId || !type) {
+            return reply.status(400).send({ error: 'Os campos destination, templateId e type são obrigatórios.' });
         }
         try {
             const responseSetSend = await chatwootService.updateContactAttributesForNotSendBotMenu(destination);
-            const responseSendTemplate = await gupshupService.sendTemplate(destination, templateId, params);
+            const responseSendTemplate = await gupshupService.sendTemplate(destination, templateId, params, type, files);
             const responseSendToChatwootAfterTemplate = await chatwootService.sendToChatwootAfterTemplate(destination, templateId, params);
             return reply.send({
                 responseSendTemplate: responseSendTemplate.data,
