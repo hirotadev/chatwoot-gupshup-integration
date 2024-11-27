@@ -17,6 +17,9 @@ export const messageParser = {
   
       const parser = parsers[type];
       if (!parser) {
+        console.error('Unsupported message type');
+        console.error(type);
+        console.error(payload)
         return 'Unsupported message type';
       }
   
