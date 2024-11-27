@@ -17,6 +17,9 @@ const handleOutgoingMessage = async (body) => {
 };
 
 const handleAttachment = async (attachment, destination) => {
+  console.log('handleAttachment');
+  console.log(attachment);
+  console.log(destination);
   const attachmentTypes = {
     'image': {
       type: 'image',
@@ -50,6 +53,9 @@ const handleAttachment = async (attachment, destination) => {
 
   const typeConfig = attachmentTypes[attachment.file_type];
   if (!typeConfig) {
+    console.error(`Unsupported attachment type: ${attachment.file_type}`);
+    console.error(attachment);
+    console.error(destination);
     throw new Error(`Unsupported attachment type: ${attachment.file_type}`);
   }
 
