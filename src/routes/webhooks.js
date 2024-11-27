@@ -70,7 +70,8 @@ const handleRatingRequest = async (body) => {
 export const webhookRoutes = async (fastify) => {
     fastify.post('/webhook/gupshup', async (request, reply) => {
         const { body } = request;
-
+        console.log('Chamada no endpoint /webhook/gupshup');
+        console.log(body.type, body.payload.sender, body.payload.type, body.payload.payload);
         if (body.type !== 'message') {
             return reply.status(200).send();
         }
@@ -90,7 +91,8 @@ export const webhookRoutes = async (fastify) => {
 
     fastify.post('/webhook/chatwoot', async (request, reply) => {
         const { body } = request;
-
+        console.log('Chamada no endpoint /webhook/chatwoot');
+        console.log(body.event, body.message_type, body.private, body.content_type);
         try {
             if (body.event === 'message_created' && body.message_type === 'outgoing' && body.private === false) {
                 await handleOutgoingMessage(body);
