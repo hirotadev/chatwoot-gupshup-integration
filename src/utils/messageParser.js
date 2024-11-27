@@ -12,7 +12,8 @@ export const messageParser = {
         button_reply: this._parseButtonReply,
         list_reply: this._parseListReply,
         quick_reply: this._parseQuickReply,
-        sticker: this._parseSticker
+        sticker: this._parseSticker,
+        reaction: this._parseReaction,
       };
   
       const parser = parsers[type];
@@ -77,4 +78,8 @@ export const messageParser = {
     _parseSticker(payload) {
       return `![Image](${payload.url})`;
     },
+
+    _parseReaction(payload) {
+      return `**Reação:** ${payload.emoji}`
+    }
   };
