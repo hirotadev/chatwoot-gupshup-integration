@@ -4,10 +4,10 @@ export const messageParser = {
     const parsers = {
       text: this._parseText,
       image: this._parseImage,
-      file: this._parseFile,
+      document: this._parseFile,
       audio: this._parseAudio,
       video: this._parseVideo,
-      contact: this._parseContact,
+      contacts: this._parseContact,
       location: this._parseLocation,
       button_reply: this._parseButtonReply,
       list_reply: this._parseListReply,
@@ -38,19 +38,19 @@ export const messageParser = {
   },
 
   _parseFile(payload) {
-    return `**Arquivo:** [${payload.filename || 'Download'}](${payload.url})`;
+    return `**Arquivo:** [${payload.document.filename || 'Download'}](${payload.document.url})`;
   },
 
   _parseAudio(payload) {
-    return `**Audio:** [Ouça aqui](${payload.url})`;
+    return `**Audio:** [Ouça aqui](${payload.audio.url})`;
   },
 
   _parseVideo(payload) {
-    return `**Video:** [Assista aqui](${payload.url})\n\n${payload.caption || ''}`;
+    return `**Video:** [Assista aqui](${payload.video.url})`;
   },
 
   _parseContact(payload) {
-    return `**Informações do contato compartilhado:**\n${payload.contacts.map(contact =>
+    return `**Informações do contato compartilhado:**\n${payload.contacts.contacts.map(contact =>
       `- **Nome:** ${contact.name.formatted_name}\n` +
       `- **Telefone:** ${contact.phones[0].phone}\n` +
       (contact.org ? `- **Empresa:** ${contact.org.company}\n` : '')
