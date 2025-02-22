@@ -88,9 +88,9 @@ export const webhookRoutes = async (fastify) => {
       const type = body.entry[0].changes[0].value?.messages[0].type;
       const messageContent = messageParser.parseIncoming(type, body.entry[0].changes[0].value?.messages[0]);
 
-      console.log(contact.profile.wa_id, contact.profile.name, messageContent);
+      console.log(contact.wa_id, contact.profile.name, messageContent);
 
-      await chatwootService.sendToChatwoot(contact.profile.wa_id, contact.profile.name, messageContent);
+      await chatwootService.sendToChatwoot(contact.wa_id, contact.profile.name, messageContent);
 
       return reply.status(200).send();
     } catch (error) {
