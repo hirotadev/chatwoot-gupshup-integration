@@ -51,7 +51,7 @@ export const messageParser = {
 
   _parseContact(payload) {
     console.log(payload.contacts);
-    return `**Informações do contato compartilhado:**\n${payload.contacts.contacts.map(contact =>
+    return `**Informações do contato compartilhado:**\n${payload.contacts.map(contact =>
       `- **Nome:** ${contact.name.formatted_name}\n` +
       `- **Telefone:** ${contact.phones[0].phone}\n` +
       (contact.org ? `- **Empresa:** ${contact.org.company}\n` : '')
