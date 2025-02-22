@@ -79,7 +79,7 @@ export const webhookRoutes = async (fastify) => {
     console.log('Chamada no endpoint /webhook/gupshup');
     console.log(body.entry[0].changes[0].value?.contacts[0]);
     console.log(body.entry[0].changes[0].value?.messages[0]);
-    if (body.type !== 'message') {
+    if (!body.entry[0].changes[0].value?.contacts[0] && !body.entry[0].changes[0].value?.messages[0].type && !body.entry[0].changes[0].value?.messages[0]) {
       return reply.status(200).send();
     }
 
