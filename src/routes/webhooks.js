@@ -94,6 +94,7 @@ export const webhookRoutes = async (fastify) => {
 
       return reply.status(200).send();
     } catch (error) {
+      console.error(error);
       request.log.error('Error processing Gupshup webhook:', error);
       return reply.status(200).send();
     }
