@@ -60,8 +60,8 @@ export const messageParser = {
 
   _parseLocation(payload) {
     return `**Informações da localização recebida:**\n` +
-      `- **Latitude:** ${payload.latitude}\n` +
-      `- **Longitude:** ${payload.longitude}`;
+      `- **Latitude:** ${payload.location.latitude}\n` +
+      `- **Longitude:** ${payload.location.longitude}`;
   },
 
   _parseButtonReply(payload) {
