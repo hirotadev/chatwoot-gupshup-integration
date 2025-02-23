@@ -74,7 +74,7 @@ export const messageParser = {
   },
 
   _parseQuickReply(payload) {
-    return `**Resposta dos botões:** ${payload.text}`;
+    return `**Resposta dos botões:** ${payload.button.text}`;
   },
 
   _parseSticker(payload) {
