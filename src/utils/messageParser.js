@@ -9,11 +9,12 @@ export const messageParser = {
       video: this._parseVideo,
       contacts: this._parseContact,
       location: this._parseLocation,
-      button_reply: this._parseButtonReply,
+      button: this._parseButtonReply,
       list_reply: this._parseListReply,
       quick_reply: this._parseQuickReply,
       sticker: this._parseSticker,
       reaction: this._parseReaction,
+      interactive: this._parseInteractive
     };
 
     const parser = parsers[type];
@@ -65,7 +66,7 @@ export const messageParser = {
   },
 
   _parseButtonReply(payload) {
-    return `**Resposta do botão:** ${payload.title} (ID: ${payload.id})`;
+    return `**Resposta do botão:** ${payload.button.text} (ID: ${payload.context.id})`;
   },
 
   _parseListReply(payload) {
@@ -82,5 +83,23 @@ export const messageParser = {
 
   _parseReaction(payload) {
     return `**Reação:** ${payload.reaction.emoji}`
+  },
+
+  _parseInteractive(payload) {
+    // Supondo que 'obj' é o objeto recebido
+    const responseString = payload.interactive.nfm_reply.response_json;
+
+    // Converte a string JSON para objeto
+    const responseData = JSON.parse(responseString);
+
+    // Cria uma string com cada valor em uma linha
+    const markdownOutput = Object.values(responseData)
+      .map(valor => `${valor}`)
+      .join('\n');
+
+    // Exibe o resultado
+    console.log(markdownOutput);
+
+    return markdownOutput;
   }
 };
