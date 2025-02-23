@@ -77,10 +77,10 @@ export const messageParser = {
   },
 
   _parseSticker(payload) {
-    return `![Image](${payload.url})`;
+    return `![Image](${payload.sticker.url})`;
   },
 
   _parseReaction(payload) {
-    return `**Reação:** ${payload.emoji}`
+    return `**Reação:** ${payload.reaction.emoji}`
   }
 };
